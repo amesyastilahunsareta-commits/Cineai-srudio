@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CineAI Studio Ultra — Clip Batch</title>
+<style>
+:root{--bg:#090b12;--panel:#131827;--panel2:#1a2234;--text:#f4f6ff;--muted:#aab4ca;--accent:#73e1ff;--accent2:#9b7bff;--danger:#ff8b8b;--line:#303b52}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#1a2440 0,#090b12 52%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;padding:18px}
+.wrap{max-width:1000px;margin:auto}.hero{padding:22px 0 14px}.tag{display:inline-block;color:var(--accent);border:1px solid #38677a;border-radius:999px;padding:5px 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:clamp(27px,6vw,44px);margin:12px 0 8px;line-height:1.05}.sub{color:var(--muted);max-width:720px;line-height:1.5}
+.notice{background:#2b2415;border:1px solid #725b29;color:#ffe4a5;padding:12px 14px;border-radius:12px;line-height:1.45;margin:16px 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.panel{background:linear-gradient(150deg,var(--panel),#101522);border:1px solid var(--line);border-radius:17px;padding:17px;margin:14px 0;box-shadow:0 12px 35px #0003}
+label{display:block;color:#dce4f7;font-size:13px;margin:0 0 7px}input,select,textarea{width:100%;border:1px solid #39445c;background:#0c111d;color:var(--text);border-radius:10px;padding:11px;font:inherit;outline:none}textarea{min-height:110px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.field{margin-bottom:13px}.full{grid-column:1/-1}.btnrow{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+button{border:0;border-radius:11px;padding:12px 15px;font-weight:750;font-size:14px;cursor:pointer;background:linear-gradient(100deg,var(--accent),#b0f5ff);color:#071018}
+button.secondary{background:#252f45;color:#edf2ff;border:1px solid #46536e}button.danger{background:#4b242c;color:#ffe5e5;border:1px solid #88434b}button:disabled{opacity:.45;cursor:not-allowed}
+.small{font-size:12px;color:var(--muted);line-height:1.5}.progressbox{height:10px;background:#080b12;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin:10px 0}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s}
+.status{font-size:14px;color:var(--accent);margin-top:7px;white-space:pre-wrap}.queue{display:grid;gap:12px}.clip{background:#0c111d;border:1px solid var(--line);border-radius:13px;padding:13px}.cliphead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.badge{font-size:11px;border-radius:99px;padding:4px 8px;background:#28344a;color:#dce8ff}.badge.ok{background:#173b30;color:#a6f4d3}.badge.err{background:#48252a;color:#ffc1c1}.clip video{width:100%;max-height:420px;background:#000;border-radius:10px;margin-top:10px}.clipdetails{color:var(--muted);font-size:12px;line-height:1.45;margin-top:7px}.clip button{padding:9px 11px;font-size:12px}
+@media(max-width:650px){body{padding:12px}.grid{grid-template-columns:1fr}.panel{padding:13px}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="hero">
+  <span class="tag">Cinematic video lab</span>
+  <h1>CineAI Studio <span style="color:var(--accent)">Ultra</span></h1>
+  <p class="sub">Build a storyboard and try to generate up to 20 separate short clips. Review and download each clip, then assemble them in CapCut.</p>
+ </header>
+ <div class="notice"><strong>Before you start:</strong> this uses Puter’s online AI video service. Use “Test video service (sample)” first; it returns a sample rather than generating your scene. Real generation is not guaranteed to be free or unlimited; your account/provider may ask for authorization or charge credits. The batch stops when a clip fails. Check the provider’s terms and costs before confirming.</div>
+ <section class="panel">
+  <h2 style="margin-top:0">1. Your movie setup</h2>
+  <div class="grid">
+   <div class="field"><label for="theme">Video theme</label><select id="theme"><option>PUBG-inspired battle royale cinematic</option><option>Futuristic battle royale hero trailer</option><option>Luxury car drift cinematic</option><option>Dark gaming comeback edit</option></select></div>
+   <div class="field"><label for="count">Number of clips (max 20)</label><select id="count"><option>5</option><option>10</option><option selected>20</option></select></div>
+   <div class="field"><label for="duration">Duration per clip</label><select id="duration"><option value="5" selected>5 seconds</option><option value="10">10 seconds</option></select><div class="small">Short clips are more likely to fit model limits. If the provider rejects a duration, switch to 5 seconds.</div></div>
+   <div class="field"><label for="ratio">Aspect ratio</label><select id="ratio"><option value="9:16" selected>9:16 vertical (TikTok/Reels)</option><option value="16:9">16:9 widescreen</option><option value="1:1">1:1 square</option></select></div>
+   <div class="field"><label for="hero">Hero / outfit style</label><select id="hero"><option>Original battle-royale hero wearing an icy blue futuristic suit</option><option>Original masked hero in a crimson and black X-Suit-inspired outfit</option><option>Original silver-and-gold armored sci-fi hero</option><option>Original street racer in a black racing jacket</option></select></div>
+   <div class="field"><label for="vehicle">Vehicle</label><select id="vehicle"><option>Black luxury sports coupe inspired by a BMW M8</option><option>Futuristic battle royale sports car</option><option>Off-road buggy on a dusty track</option><option>Motorcycle on a neon city road</option><option>No vehicle</option></select></div>
+   <div class="field"><label for="look">Visual style</label><select id="look"><option>Photorealistic game-trailer CGI, dramatic lighting, crisp detail</option><option>Dark cinematic, high contrast, blue and violet lights</option><option>Golden-hour cinematic, dust, lens flare</option><option>Neon cyberpunk night, rain reflections</option></select></div>
+   <div class="field"><label for="audio">Audio direction</label><select id="audio"><option>Engine revs, tire squeal, gear changes, cinematic bass, no speech</option><option>Epic orchestral trailer music, deep impacts, no speech</option><option>Wind, footsteps, cloth movement, distant cinematic ambience</option><option>Silent video</option></select></div>
+   <div class="field full"><label for="script">Your video script / story (optional)</label><textarea id="script" style="min-height:170px" placeholder="Paste your video script here. Example: A masked icy-blue hero steps out of smoke, walks toward a black BMW M8, starts the engine, then the car drifts around a neon-lit closed track. End with a dramatic hero pose."></textarea><div class="small">Paste your STORY or scene instructions here — never paste HTML or JavaScript app code.</div></div>
+   <div class="field full"><label for="extra">Extra details (optional)</label><textarea id="extra" placeholder="Extra visual details: icy particles, blue reflections, slow motion, cinematic camera moves, no subtitles."></textarea></div>
+  </div>
+  <div class="btnrow"><button id="build">Build storyboard</button><button id="signin" class="secondary">1. Sign in to Puter</button><button id="testService" class="secondary">Test video service (sample)</button><button id="generate" disabled>Generate storyboard clips</button><button id="stop" class="danger" disabled>Stop after current clip</button><button id="clear" class="secondary">Clear results</button></div>
+  <label style="display:flex;align-items:flex-start;gap:9px;margin-top:14px"><input id="confirmCost" type="checkbox" style="width:auto;margin-top:3px"><span class="small">I understand video generation uses an external service and may consume credits or incur costs. I want to start the batch myself.</span></label>
+  <div class="progressbox"><div class="bar" id="bar"></div></div><div class="status" id="status">Ready. Build the storyboard first.</div>
+ </section>
+ <section class="panel">
+  <h2 style="margin-top:0">2. Storyboard & generated clips</h2>
+  <p class="small">The storyboard creates different scene prompts. It does not mean the videos are already generated. Press Generate to attempt them one by one. Each successful clip should appear below when the provider returns a playable result.</p>
+  <div class="queue" id="queue"><p class="small">No storyboard yet.</p></div>
+ </section>
+ <p class="small">Tip: keep the page open while generating. The provider may have model, account, duration, region, or rate limits. If a clip fails, the batch pauses so you can review the error and retry later. Video links may be temporary, so download successful clips as soon as possible.</p>
+</div>
+<script src="https://js.puter.com/v2/"></script>
+<script>
+const $=id=>document.getElementById(id);
+let scenes=[], running=false, stopRequested=false, built=false;
+const sceneIdeas=[
+["Opening reveal","The hero appears from shadow, suit details catching the light, slow cinematic push-in."],
+["Suit close-up","Macro close-ups of futuristic suit textures, gloves, shoulder armor and glowing accents."],
+["Hero walk","Low-angle tracking shot as the hero walks through drifting smoke toward camera."],
+["Landscape establish","Wide establishing shot of a dramatic battle royale island at sunrise, wind and atmospheric haze."],
+["Cosmetic showcase","A fictional icy blue game cosmetic is displayed in a dramatic, elegant close-up; non-graphic."],
+["Vehicle reveal","The sports coupe emerges from a dark garage, headlights illuminating dust."],
+["Engine start","Close shot of the car starting, dashboard glow, subtle engine vibration and rev."],
+["Wheel detail","Close-up of the wheel spinning as the car rolls forward, reflections on the bodywork."],
+["Drift entry","The car enters a controlled cinematic drift on an empty closed course, tire smoke trailing."],
+["Drift pass","Side tracking shot of the car sliding smoothly around a corner, no people nearby."],
+["Gear shift","Interior close-up of a gloved hand shifting gears, engine note rising, road reflections."],
+["Rear chase","Low rear chase camera following the car through a neon-lit road."],
+["Hero and car","The hero stands beside the parked car in a confident trailer pose, wind moving the coat."],
+["Silhouette","Hero silhouette against bright backlights and drifting particles, dramatic slow motion."],
+["Detail montage","Quick cinematic close-ups of suit seams, visor reflection, car badge-like abstract trim with no logos."],
+["Night scene","Rainy night scene with neon reflections and the hero crossing the frame."],
+["Speed ramp","Cinematic speed ramp from slow motion to smooth fast tracking of the car on a safe empty road."],
+["Final approach","The hero walks toward camera while the car idles behind in soft focus."],
+["Final pose","Hero turns toward the skyline; camera orbits slowly as the music reaches a peak."],
+["End card shot","Wide final shot of the hero and car beneath dramatic sky, clean composition with empty space for editing text."]
+];
+function buildStoryboard(){
+ const count=Number($('count').value), dur=Number($('duration').value);
+ const theme=$('theme').value, hero=$('hero').value, vehicle=$('vehicle').value, look=$('look').value, audio=$('audio').value, ratio=$('ratio').value, script=$('script').value.trim(), extra=$('extra').value.trim();
+ scenes=[];
+ for(let i=0;i<count;i++){
+  const [title,action]=sceneIdeas[i%sceneIdeas.length];
+  const scriptLine=script ? `User's overall story/script: ${script}. Adapt this specific shot to the script while keeping continuity.` : '';
+  const prompt=`Create a ${dur}-second ${ratio} video clip for a ${theme}. Scene ${i+1} of ${count}: ${title}. ${action} ${scriptLine} Main subject: ${hero}. Vehicle: ${vehicle}. Visual style: ${look}. Audio direction: ${audio}. Keep the same character design, outfit, color palette and cinematic world across the sequence. Make this a standalone editable shot with a clear beginning and end. No gore, no real-world weapon instructions, no subtitles, no watermarks. ${extra}`;
+  scenes.push({n:i+1,title,prompt,state:'ready',video:null,error:''});
+ }
+ renderQueue(); built=true; $('generate').disabled=false; $('status').textContent=`Storyboard ready: ${count} clips × ${dur} seconds. Videos have not been generated yet.`; $('bar').style.width='0%';
+}
+function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderQueue(){
+ const q=$('queue'); q.innerHTML='';
+ if(!scenes.length){q.innerHTML='<p class="small">No storyboard yet.</p>';return;}
+ scenes.forEach((s,idx)=>{
+  const el=document.createElement('div');el.className='clip';
+  const badge=s.state==='done'?'badge ok':s.state==='error'?'badge err':'badge';
+  el.innerHTML=`<div class="cliphead"><strong>Clip ${s.n}: ${esc(s.title)}</strong><span class="${badge}">${esc(s.state.toUpperCase())}</span></div><div class="clipdetails">${esc(s.prompt)}</div><div class="clipmedia"></div><div class="clipactions btnrow"></div>`;
+  const media=el.querySelector('.clipmedia'), actions=el.querySelector('.clipactions');
+  if(s.video || s.videoElement){const v=s.videoElement || document.createElement('video');v.controls=true;v.playsInline=true;if(s.video) v.src=s.video;v.style.width='100%';v.style.maxHeight='420px';media.appendChild(v);
+   if(s.video){const a=document.createElement('a');a.href=s.video;a.download=`CineAI_clip_${String(s.n).padStart(2,'0')}.mp4`;a.textContent='Download clip';a.className='small';a.style.color='var(--accent)';a.style.display='inline-block';a.style.marginTop='8px';actions.appendChild(a);}}
+  if(s.state==='error'){const e=document.createElement('p');e.className='small';e.style.color='var(--danger)';e.textContent=s.error;media.appendChild(e);const b=document.createElement('button');b.className='secondary';b.textContent='Retry this clip';b.onclick=()=>generateOne(idx,true);actions.appendChild(b);}
+  q.appendChild(el);
+ });
+}
+function readableError(e){
+ if(e==null) return 'Unknown error'; if(e.error!==undefined && typeof e.error!=='string' && !e.message){const inner=readableError(e.error); return inner==='{}'?'Puter refused the request with no details. This usually means you are not signed in to Puter, the sign-in popup was blocked, or the page was opened from a local file. Tap Sign in to Puter, allow popups, and open the page from an https link.':inner;}
+ if(typeof e==='string') return e;
+ if(e.message) return String(e.message);
+ try { return JSON.stringify(e, Object.getOwnPropertyNames(e)); } catch (_) { return String(e); }
+}
+function getVideoUrl(result){
+ if(result && typeof result.src==='string' && result.src) return result.src;
+ if(result && typeof result.currentSrc==='string' && result.currentSrc) return result.currentSrc;
+ if(result && typeof result.getAttribute==='function'){
+  const attr=result.getAttribute('src'); if(attr) return attr;
+  const data=result.getAttribute('data-source'); if(data) return data;
+ }
+ if(result && result.dataset && result.dataset.source) return result.dataset.source;
+ if(typeof result==='string') return result;
+ if(result && typeof result.url==='string') return result.url;
+ return '';
+}
+async function callVideoService(prompt, testMode=false){
+ if(!window.puter || !puter.ai || typeof puter.ai.txt2vid!=='function'){
+  throw new Error('Puter.js did not load. Open this page in Chrome with internet, then reload.');
+ }
+ if(testMode){
+  // Official documented syntax: boolean true requests the sample clip without provider generation.
+  return await puter.ai.txt2vid(prompt, true);
+ }
+ // Official model ID; the API resolves to a playable HTMLVideoElement.
+ return await puter.ai.txt2vid(prompt, {
+  model:'wan-ai/wan2.7-t2v',
+  seconds:5,
+  size: $('ratio').value==='9:16' ? '720x1280' : ($('ratio').value==='1:1' ? '720x720' : '1280x720'),
+  generate_audio: $('audio').value!=='Silent video'
+ });
+}
+async function generateOne(idx){
+ const s=scenes[idx];s.state='generating';s.error='';renderQueue();
+ try{
+  const result=await callVideoService(s.prompt, false);
+  if(result && typeof result.play==='function' && result.tagName==='VIDEO'){
+   s.videoElement=result;
+   s.video='';
+  } else {
+   const url=getVideoUrl(result);
+   if(!url) throw new Error('The service returned no playable video. Check the exact provider error and try the sample test.');
+   s.video=url;s.videoElement=null;
+  }
+  s.state='done';renderQueue();
+ }catch(e){
+  const code=e && (e.code || e.errorCode) ? ' ['+(e.code || e.errorCode)+']' : '';
+  throw new Error(readableError(e)+code);
+ }
+}
+async function testVideoService(){
+ const b=$('testService'); b.disabled=true;
+ try{ if(window.puter&&puter.auth&&!puter.auth.isSignedIn()) await puter.auth.signIn(); }catch(e){ $('status').textContent='Sign-in failed or was blocked: '+readableError(e); b.disabled=false; return; }
+ $('status').textContent='Testing the provider with its built-in sample clip (no real video generation)…';
+ try{
+  if(!window.puter || !puter.ai || typeof puter.ai.txt2vid!=='function') throw new Error('Puter.js did not load. Open the file in Chrome with internet and reload.');
+  const result=await puter.ai.txt2vid('A sunrise drone shot flying over a calm ocean', true);
+  const box=document.createElement('div');box.className='clip';
+  const title=document.createElement('strong');title.textContent='Provider sample test';box.appendChild(title);
+  if(result && typeof result.play==='function' && result.tagName==='VIDEO'){
+   result.controls=true;result.playsInline=true;result.style.width='100%';result.style.maxHeight='360px';result.style.marginTop='10px';box.appendChild(result);
+  }else{
+   const url=getVideoUrl(result);if(!url) throw new Error('Sample returned no playable video element.');
+   const v=document.createElement('video');v.controls=true;v.playsInline=true;v.src=url;v.style.width='100%';v.style.maxHeight='360px';v.style.marginTop='10px';box.appendChild(v);
+  }
+  $('queue').prepend(box);
+  $('status').textContent='Sample loaded successfully. If it plays, tap Generate storyboard clips to request real clips.';
+ }catch(e){
+  $('status').textContent='Sample test failed: '+readableError(e)+'\nNo real video was generated. Check internet/browser access and the error shown above.';
+ }finally{b.disabled=false;}
+}
+async function generateBatch(){
+ if(running)return;
+ if(!built)buildStoryboard();
+ if(!$('confirmCost').checked){$('status').textContent='⚠ Tick the confirmation box above the progress bar first, then press Generate again.';$('confirmCost').scrollIntoView({block:'center'});return;}
+ if(!window.puter||!puter.ai||!puter.ai.txt2vid){$('status').textContent='⚠ The Puter video service did not load. This page must be opened as a downloaded file in Chrome (not inside Claude) with internet on. Download it, open it from your Files app in Chrome, then try again.';return;}
+ try{ if(!puter.auth.isSignedIn()) await puter.auth.signIn(); }catch(e){ $('status').textContent='Sign-in failed or was blocked: '+readableError(e); return; }
+ running=true;stopRequested=false;$('generate').disabled=true;$('stop').disabled=false;
+ let done=0, failed=0;
+ for(let i=0;i<scenes.length;i++){
+  if(stopRequested)break;
+  if(scenes[i].state==='done') {done++;continue;}
+  $('status').textContent=`Generating clip ${i+1} of ${scenes.length}… Keep this page open.`;
+  try{await generateOne(i);if(scenes[i].state==='done')done++;else failed++;}
+  catch(e){scenes[i].state='error';scenes[i].error=e.message||String(e);renderQueue();failed++;$('status').textContent=`Clip ${i+1} failed: ${scenes[i].error}\nBatch paused to avoid repeated failed requests. Fix the issue, then press Generate again to continue.`;break;}
+  $('bar').style.width=`${Math.round(((i+1)/scenes.length)*100)}%`;
+ }
+ running=false;$('generate').disabled=false;$('stop').disabled=true;
+ if(stopRequested)$('status').textContent=`Stopped after current clip. ${done} successful clips in this run; ${failed} failed.`;
+ else if(scenes.every(s=>s.state==='done'))$('status').textContent=`Finished: ${scenes.length} clips generated. Download each clip before leaving this page.`;
+ else if(!$('status').textContent.includes('failed:'))$('status').textContent=`Batch ended. ${done} successful, ${failed} failed. You can retry failed clips individually.`;
+}
+$('build').onclick=buildStoryboard;
+$('signin').onclick=async()=>{try{if(!window.puter||!puter.auth){$('status').textContent='Puter did not load. Check internet and reload.';return;}await puter.auth.signIn();$('status').textContent='Signed in to Puter. Now tap Test video service.';}catch(e){$('status').textContent='Sign-in failed or was blocked: '+readableError(e);}};
+$('testService').onclick=testVideoService;
+$('generate').onclick=generateBatch;
+$('stop').onclick=()=>{stopRequested=true;$('status').textContent='Stop requested; waiting for the current generation to finish…';};
+$('clear').onclick=()=>{if(running){$('status').textContent='Wait for the current generation to finish first.';return;}scenes=[];built=false;$('queue').innerHTML='<p class="small">No storyboard yet.</p>';$('generate').disabled=true;$('bar').style.width='0%';$('status').textContent='Cleared. Build a new storyboard when ready.';};
+buildStoryboard();
+</script>
+</body>
+</html>
